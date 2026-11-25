@@ -121,8 +121,6 @@ export const themes: Theme[] = [
   },
 ];
 
-export const numbers = ['één', 'twee', 'drie', 'vier', 'vijf', 'zes', 'zeven', 'acht', 'negen', 'tien'];
-
 /** Fixed spoken phrases, keyed by id. */
 export const phrases = {
   hallo: 'Hallo Nora! Wat wil je spelen?',
@@ -158,6 +156,17 @@ export const phrases = {
   minIntro: 'We gaan minnen! Hoeveel blijven er over?',
   telSamen: 'Tel ze maar samen.',
   sticker: 'Joepie! Je hebt een nieuwe sticker!',
+  worldTellen: 'Tellen',
+  worldPuzzelen: 'Puzzelen',
+  gameHonderd: 'Het honderdveld',
+  gameErna: 'Welk getal komt erna?',
+  gamePatroon: 'Patronen',
+  gameHoort: 'Wat hoort bij elkaar?',
+  honderdIntro: 'Tik op een getal. Of tik op een knop en tel mee!',
+  ernaVraag: 'Welk getal komt hierna?',
+  patroonIntro: 'Kijk goed naar het patroon.',
+  patroonVraag: 'Wat komt er hierna?',
+  hoortIntro: 'Wat hoort bij elkaar? Tik op het goede plaatje.',
 } as const;
 
 export type PhraseId = keyof typeof phrases;

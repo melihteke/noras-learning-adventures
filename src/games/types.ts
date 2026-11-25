@@ -21,5 +21,7 @@ export interface Sub {
   id: string;
   /** English name for the parent progress page. */
   label: string;
+  /** Dutch caption under the tile. */
+  caption?: string;
   tile: () => Node;
 }

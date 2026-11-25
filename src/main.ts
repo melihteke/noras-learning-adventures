@@ -12,20 +12,29 @@ import { abcGame } from './games/abc.ts';
 import { beginklankGame } from './games/beginklank.ts';
 import { letterGame } from './games/letterzoek.ts';
 import { mathGame, mathLevels } from './games/math.ts';
+import { honderdGame } from './games/honderd.ts';
+import { ernaGame, ernaLevels } from './games/erna.ts';
+import { patroonGame, patternLevels, patternTile } from './games/patroon.ts';
+import { hoortGame } from './games/hoort.ts';
+import { pairSets } from './content/pairs.ts';
+import { icons, type IconId } from './icons.ts';
 import type { Game, Sub } from './games/types.ts';
 
-type WorldId = 'woorden' | 'letters' | 'rekenen';
+type WorldId = 'woorden' | 'letters' | 'tellen' | 'rekenen' | 'puzzelen';
 
-const worlds: { id: WorldId; icon: string; nameKey: string; label: string }[] = [
-  { id: 'woorden', icon: '💬', nameKey: 'p-worldWoorden', label: 'Words' },
-  { id: 'letters', icon: '🔤', nameKey: 'p-worldLetters', label: 'Letters' },
-  { id: 'rekenen', icon: '🔢', nameKey: 'p-worldRekenen', label: 'Maths' },
+const worlds: { id: WorldId; nl: string; nameKey: string; label: string }[] = [
+  { id: 'woorden', nl: 'Woorden', nameKey: 'p-worldWoorden', label: 'Words' },
+  { id: 'letters', nl: 'Letters', nameKey: 'p-worldLetters', label: 'Letters' },
+  { id: 'tellen', nl: 'Tellen', nameKey: 'p-worldTellen', label: 'Counting' },
+  { id: 'rekenen', nl: 'Rekenen', nameKey: 'p-worldRekenen', label: 'Sums' },
+  { id: 'puzzelen', nl: 'Puzzelen', nameKey: 'p-worldPuzzelen', label: 'Puzzles' },
 ];
 
 interface GameInfo {
   id: string;
   world: WorldId;
-  icon: string;
+  icon: IconId;
+  nl: string;
   nameKey: string;
   label: string;
   helpId: HelpId;
@@ -33,35 +42,50 @@ interface GameInfo {
   subs: Sub[];
 }
 
-const iconTile = (icon: string) => () => el('span', { class: 'tile-icon' }, icon);
+/** Tile content: icon (SVG id or emoji), Dutch caption and small English caption. */
+function tileContent(icon: IconId | Node, nl?: string, en?: string): Node[] {
+  let pic: Node = icon as Node;
+  if (typeof icon === 'string') {
+    const span = el('span', { class: 'tile-svg' });
+    span.innerHTML = icons[icon];
+    pic = span;
+  }
+  return [pic, ...(nl ? [el('span', { class: 'tile-label' }, nl)] : []), ...(en ? [el('span', { class: 'tile-en' }, en)] : [])];
+}
+
+const emojiTile = (icon: string) => () => el('span', { class: 'tile-icon' }, icon);
+const textTile = (text: string) => () => el('span', { class: 'tile-letters' }, text);
 const themeSubs = (ok: (t: (typeof themes)[number]) => boolean): Sub[] =>
-  themes.filter(ok).map((t) => ({ id: t.id, label: t.name, tile: iconTile(t.icon) }));
-const letterSubs: Sub[] = letterGroups.map((g) => ({
-  id: g.id,
-  label: `Letters ${g.letters.join(' ')}`,
-  tile: () => el('span', { class: 'tile-letters' }, g.letters.join(' ')),
-}));
+  themes.filter(ok).map((t) => ({ id: t.id, label: t.name, caption: t.name, tile: emojiTile(t.icon) }));
+const letterSubs: Sub[] = letterGroups.map((g) => ({ id: g.id, label: `Letters ${g.letters.join(' ')}`, tile: textTile(g.letters.join(' ')) }));
 const mathSubs = (op: 'plus' | 'min'): Sub[] =>
   mathLevels
     .filter((l) => l.op === op)
-    .map((l) => ({
-      id: l.id,
-      label: l.label,
-      tile: () =>
-        el('span', { class: 'tile-math' }, el('b', {}, op === 'plus' ? '+' : '−'), el('small', {}, l.max === 5 ? '🖐️' : '🖐️🖐️')),
-    }));
+    .map((l) => ({ id: l.id, label: l.label, caption: `tot ${l.max}`, tile: textTile(op === 'plus' ? '1 + 2' : '3 − 1') }));
+const ernaSubs: Sub[] = ernaLevels.map((l) => ({ id: l.id, label: l.label, caption: l.step === 1 ? `tot ${l.max}` : `per ${l.step}`, tile: textTile(l.tile) }));
+const patternSubs: Sub[] = patternLevels.map((l) => ({
+  id: l.id,
+  label: l.label,
+  caption: { kleur: 'Kleuren', vorm: 'Vormen', aab: 'A A B', abc: 'A B C' }[l.id],
+  tile: () => patternTile(l.id),
+}));
+const pairSubs: Sub[] = pairSets.map((s) => ({ id: s.id, label: s.name, caption: s.name, tile: emojiTile(s.icon) }));
+const single = (label: string): Sub[] => [{ id: 'all', label, tile: () => el('span') }];
 
 const games: GameInfo[] = [
-  { id: 'luister', world: 'woorden', icon: '👂', nameKey: 'p-gameLuister', label: 'Listen & pick', helpId: 'luister', play: luisterGame, subs: themeSubs((t) => t.words.length >= 4) },
-  { id: 'memory', world: 'woorden', icon: '🃏', nameKey: 'p-gameMemory', label: 'Memory', helpId: 'memory', play: memoryGame, subs: themeSubs((t) => t.words.length >= 4) },
-  { id: 'abc', world: 'letters', icon: '📖', nameKey: 'p-gameAbc', label: 'ABC book', helpId: 'abc', play: abcGame, subs: [{ id: 'all', label: 'All letters', tile: iconTile('📖') }] },
-  { id: 'begin', world: 'letters', icon: '👄', nameKey: 'p-gameBegin', label: 'First sound', helpId: 'begin', play: beginklankGame, subs: letterSubs },
-  { id: 'letter', world: 'letters', icon: '🔍', nameKey: 'p-gameLetter', label: 'Find the letter', helpId: 'letter', play: letterGame, subs: letterSubs },
-  { id: 'tel', world: 'rekenen', icon: '🧮', nameKey: 'p-gameTel', label: 'Count along', helpId: 'tel', play: telGame, subs: themeSubs((t) => countableWords(t).length > 0) },
-  { id: 'plus', world: 'rekenen', icon: '➕', nameKey: 'p-gamePlus', label: 'Addition', helpId: 'plus', play: mathGame, subs: mathSubs('plus') },
-  { id: 'min', world: 'rekenen', icon: '➖', nameKey: 'p-gameMin', label: 'Subtraction', helpId: 'min', play: mathGame, subs: mathSubs('min') },
+  { id: 'luister', world: 'woorden', icon: 'luister', nl: 'Luister en kies', nameKey: 'p-gameLuister', label: 'Listen & pick', helpId: 'luister', play: luisterGame, subs: themeSubs((t) => t.words.length >= 4) },
+  { id: 'memory', world: 'woorden', icon: 'memory', nl: 'Memory', nameKey: 'p-gameMemory', label: 'Memory', helpId: 'memory', play: memoryGame, subs: themeSubs((t) => t.words.length >= 4) },
+  { id: 'abc', world: 'letters', icon: 'abc', nl: 'Het ABC', nameKey: 'p-gameAbc', label: 'ABC book', helpId: 'abc', play: abcGame, subs: single('All letters') },
+  { id: 'begin', world: 'letters', icon: 'begin', nl: 'Beginklank', nameKey: 'p-gameBegin', label: 'First sound', helpId: 'begin', play: beginklankGame, subs: letterSubs },
+  { id: 'letter', world: 'letters', icon: 'letter', nl: 'Letters zoeken', nameKey: 'p-gameLetter', label: 'Find the letter', helpId: 'letter', play: letterGame, subs: letterSubs },
+  { id: 'tel', world: 'tellen', icon: 'tel', nl: 'Tel mee', nameKey: 'p-gameTel', label: 'Count objects', helpId: 'tel', play: telGame, subs: themeSubs((t) => countableWords(t).length > 0) },
+  { id: 'honderd', world: 'tellen', icon: 'honderd', nl: 'Honderdveld', nameKey: 'p-gameHonderd', label: 'Hundred chart', helpId: 'honderd', play: honderdGame, subs: single('1–100') },
+  { id: 'erna', world: 'tellen', icon: 'erna', nl: 'Wat komt erna?', nameKey: 'p-gameErna', label: 'Next number', helpId: 'erna', play: ernaGame, subs: ernaSubs },
+  { id: 'plus', world: 'rekenen', icon: 'plus', nl: 'Plussommen', nameKey: 'p-gamePlus', label: 'Addition', helpId: 'plus', play: mathGame, subs: mathSubs('plus') },
+  { id: 'min', world: 'rekenen', icon: 'min', nl: 'Minsommen', nameKey: 'p-gameMin', label: 'Subtraction', helpId: 'min', play: mathGame, subs: mathSubs('min') },
+  { id: 'patroon', world: 'puzzelen', icon: 'patroon', nl: 'Patronen', nameKey: 'p-gamePatroon', label: 'Patterns', helpId: 'patroon', play: patroonGame, subs: patternSubs },
+  { id: 'hoort', world: 'puzzelen', icon: 'hoort', nl: 'Wat hoort bij elkaar?', nameKey: 'p-gameHoort', label: 'What goes together', helpId: 'hoort', play: hoortGame, subs: pairSubs },
 ];
-
 const app = document.getElementById('app')!;
 let session = 0;
 let counters: HTMLElement | undefined;
@@ -123,8 +147,8 @@ function home() {
                 'button',
                 { class: 'continue', 'aria-label': 'Verder spelen', onclick: () => play(lastGame, lastSub) },
                 el('span', {}, '▶️'),
-                el('span', { class: 'tile-icon' }, lastGame.icon),
-                lastSub.tile(),
+                ...tileContent(lastGame.icon),
+                ...(lastGame.subs.length > 1 ? [lastSub.tile()] : []),
               ),
             ]
           : []),
@@ -132,9 +156,9 @@ function home() {
           'div',
           { class: 'tiles worlds' },
           ...worlds.map((w) =>
-            el('button', { class: `tile world-${w.id}`, 'aria-label': w.label, onclick: () => world(w.id) }, el('span', { class: 'tile-icon' }, w.icon)),
+            el('button', { class: `tile world-${w.id}`, 'aria-label': w.label, onclick: () => world(w.id) }, ...tileContent(w.id, w.nl, w.label)),
           ),
-          el('button', { class: 'tile world-progress', 'aria-label': 'Voortgang', onclick: progressPage }, el('span', { class: 'tile-icon' }, '🌈')),
+          el('button', { class: 'tile world-progress', 'aria-label': 'Voortgang', onclick: progressPage }, ...tileContent('voortgang', 'Voortgang', 'Progress')),
         ),
       ),
     ),
@@ -154,7 +178,7 @@ function world(id: WorldId) {
       { class: `tiles world-bg-${id}` },
       ...games
         .filter((g) => g.world === id)
-        .map((g) => el('button', { class: `tile game-tile world-${id}`, 'aria-label': g.label, onclick: () => pick(g) }, el('span', { class: 'tile-icon' }, g.icon))),
+        .map((g) => el('button', { class: `tile game-tile world-${id}`, 'aria-label': g.label, onclick: () => pick(g) }, ...tileContent(g.icon, g.nl, g.label))),
     ),
   );
   prompt();
@@ -171,7 +195,7 @@ function pick(game: GameInfo) {
       'main',
       { class: 'tiles themes' },
       ...game.subs.map((s) =>
-        el('button', { class: `tile theme world-${game.world}`, 'aria-label': s.label, onclick: () => play(game, s) }, s.tile(), stars(game.id, s.id)),
+        el('button', { class: `tile theme world-${game.world}`, 'aria-label': s.label, onclick: () => play(game, s) }, s.tile(), ...(s.caption ? [el('span', { class: 'tile-label' }, s.caption)] : []), stars(game.id, s.id)),
       ),
     ),
   );
@@ -242,7 +266,7 @@ function progressPage() {
       return el(
         'tr',
         { class: st?.plays ? '' : 'not-started' },
-        el('td', {}, `${g.icon} ${g.label}`),
+        el('td', {}, g.label),
         el('td', {}, s.label),
         el('td', {}, st?.done ? '⭐'.repeat(Math.min(st.done, 3)) + (st.done > 3 ? ` ×${st.done}` : '') : st?.plays ? 'started' : '—'),
         el('td', {}, acc),
@@ -264,7 +288,7 @@ function progressPage() {
             el(
               'button',
               { class: 'suggest', onclick: () => play(next.game, next.sub) },
-              el('span', { class: 'suggest-icon' }, '▶️ ', next.game.icon),
+              el('span', { class: 'suggest-icon' }, '▶️', ...tileContent(next.game.icon)),
               el('span', {}, `Suggested next: ${next.game.label}: ${next.sub.label}`),
             ),
           ]

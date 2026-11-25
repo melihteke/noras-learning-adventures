@@ -5,11 +5,13 @@ export const help = {
     html: `<p>Dutch vocabulary, letters and early maths for groep 1, built on the school themes.
       Everything is spoken in Dutch, so Nora doesn't need to read.</p>
       <ul>
-        <li><b>💬 Woorden</b>: theme vocabulary (Listen &amp; pick, Memory).</li>
-        <li><b>🔤 Letters</b>: ABC book, first sounds, finding letters.</li>
-        <li><b>🔢 Rekenen</b>: counting, addition and subtraction up to 10.</li>
-        <li><b>▶️ big button</b>: continues the last game she played.</li>
-        <li><b>🌈</b>: progress page (what she has done, accuracy, letters learned, stickers).</li>
+        <li><b>Woorden</b> (picture cards): theme vocabulary (Listen &amp; pick, Memory).</li>
+        <li><b>Letters</b> (ABC blocks): ABC book, first sounds, finding letters.</li>
+        <li><b>Tellen</b> (abacus): counting objects, the 1–100 chart, counting in 1s, 5s and 10s.</li>
+        <li><b>Rekenen</b> (+ − =): addition and subtraction up to 10.</li>
+        <li><b>Puzzelen</b> (puzzle piece): patterns and "what goes together".</li>
+        <li><b>Voortgang</b> (trophy): progress page (what she has done, accuracy, letters learned, stickers).</li>
+        <li><b>▶️ rainbow button</b>: continues the last game she played.</li>
         <li>💖 = correct answers, ⭐ = finished games. Stars unlock stickers.</li>
         <li>🔊 repeats the instruction. Short sessions (5–10 min) work best; sit with her and repeat words together.</li>
       </ul>`,
@@ -85,6 +87,46 @@ export const help = {
       <ul>
         <li>She counts the pictures that are left (the faded ones are gone) and taps the answer.</li>
         <li>🖐️ = up to 5, 🖐️🖐️ = up to 10.</li>
+      </ul>`,
+  },
+  honderd: {
+    title: 'Honderdveld (Hundred chart)',
+    html: `<p>The numbers 1 to 100. Tap any number to hear it in Dutch.</p>
+      <ul>
+        <li><b>▶ 1 2 3</b>: the app counts from 1 to 100 and lights up each number. Count along together!</li>
+        <li><b>▶ 5 10 15</b>: counting in 5s (the yellow squares).</li>
+        <li><b>▶ 10 20 30</b>: counting in 10s (the last column).</li>
+        <li>Tap the same button again to stop. Finishing a count earns a star.</li>
+      </ul>`,
+  },
+  erna: {
+    title: 'Welk getal komt erna? (What comes next?)',
+    html: `<p>Three numbers of a counting row are shown and read out (e.g. <b>10, 20, 30, ?</b>).
+      Nora taps the number that comes next.</p>
+      <ul>
+        <li>Levels: up to 10, up to 20, up to 100, counting in 5s, counting in 10s.</li>
+        <li>The small "+1 / +5 / +10" between the numbers shows the size of each jump.</li>
+        <li>Tip: count the row out loud together first.</li>
+      </ul>`,
+  },
+  patroon: {
+    title: 'Patronen (Patterns)',
+    html: `<p>A row of colours or shapes repeats (e.g. red, blue, red, blue, ?). Nora taps what comes next.</p>
+      <ul>
+        <li>Levels: colours AB, shapes AB, AAB/ABB, ABC.</li>
+        <li>After a correct answer the app says the colour (<em>rood, blauw…</em>) or shape
+          (<em>de cirkel, het vierkant, de driehoek, de ster, het hart</em>), which are words from the school list.</li>
+        <li>Tip: say the pattern out loud together, e.g. "rood, blauw, rood, blauw…".</li>
+      </ul>`,
+  },
+  hoort: {
+    title: 'Wat hoort bij elkaar? (What goes together?)',
+    html: `<p>One picture is shown, for example rain. The app asks <em>"Wat hoort bij de regen?"</em>
+      ("What goes with the rain?"). Nora picks the matching picture (the umbrella).</p>
+      <ul>
+        <li>Sets: Thuis (home), Beroepen (jobs), Herfst (autumn), Sinterklaas. The Sinterklaas pairs are the same
+          ones the teacher used in class (Piet ↔ chimney, chocolate letter ↔ shoe, steamboat ↔ sea).</li>
+        <li>Tip: ask "why?" ("Waarom?"). The teacher noted that explaining the link is still hard for the children.</li>
       </ul>`,
   },
   progress: {

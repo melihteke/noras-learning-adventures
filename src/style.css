@@ -366,3 +366,99 @@ img.pic { width: 1.1em; height: 1.1em; object-fit: contain; pointer-events: none
 @keyframes drift { 50% { transform: translateY(-18px) rotate(8deg); } }
 @keyframes floatUp { to { transform: translate(-50%, -120px) scale(1.4); opacity: 0; } }
 @keyframes spinIn { from { transform: scale(0) rotate(-180deg); } to { transform: scale(1) rotate(0); } }
+
+/* SVG icon tiles with captions */
+.tile { grid-template-rows: 1fr auto auto; padding: 10px 6px 12px; }
+.tile-svg { display: grid; place-items: center; width: 62%; align-self: center; justify-self: center; }
+.tile-svg .icon { width: 100%; height: auto; display: block; }
+.tile-label { font-size: clamp(15px, 2.4vmin, 22px); font-weight: 800; line-height: 1.1; text-align: center; }
+.tile-en { font-size: clamp(11px, 1.5vmin, 13px); color: #8a7a9a; font-weight: 600; }
+.home .tiles { display: grid; grid-template-columns: repeat(3, auto); gap: 14px; }
+.home .tile { width: min(15vw, 24vh, 160px); border-radius: 26px; }
+.home .tile-label { font-size: clamp(14px, 2.2vmin, 20px); }
+@media (max-aspect-ratio: 1/1) { .home .tile { width: min(28vw, 15vh); } .home .tile-svg { width: 56%; } }
+.world-tellen { background: linear-gradient(150deg, #e6fcf5, #c3fae8); }
+.world-puzzelen { background: linear-gradient(150deg, #fff4e6, #ffe8cc); }
+.game-tile { width: min(30vw, 210px); }
+.game-tile .tile-svg { width: 66%; }
+.continue .tile-svg { width: 56px; background: #fff; border-radius: 16px; padding: 6px; }
+.suggest-icon { display: flex; align-items: center; gap: 8px; }
+.suggest-icon .tile-svg { width: 44px; background: #fff; border-radius: 12px; padding: 4px; }
+.themes .tile-letters { font-size: min(7vw, 38px); }
+.tile .tile-stars { bottom: auto; top: 6px; right: 10px; font-size: 16px; }
+
+/* Hundred chart */
+.count-controls { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.step-btn {
+  font-size: 24px;
+  font-weight: 800;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 5px 0 var(--shadow);
+  color: var(--accent-dark);
+}
+.step-btn.playing { background: var(--rainbow); color: #fff; text-shadow: 0 2px 0 #0003; }
+.hundred { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 5px; width: min(96vw, 75vh, 640px); }
+.h-cell {
+  aspect-ratio: 1;
+  border-radius: 9px;
+  background: #fff;
+  font-size: clamp(13px, 2.6vmin, 24px);
+  font-weight: 800;
+  box-shadow: 0 3px 0 var(--shadow);
+  transition: transform 0.15s, background 0.15s;
+}
+.h-cell.five { background: #fff3bf; }
+.h-cell.ten { background: #d0ebff; }
+.h-cell.trail { background: #e5dbff; }
+.h-cell.lit { background: var(--accent-dark); color: #fff; transform: scale(1.25); box-shadow: 0 0 0 4px #fff, 0 0 18px var(--accent); z-index: 1; position: relative; }
+
+/* Next-number track */
+.track { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.track-box {
+  display: grid;
+  place-items: center;
+  min-width: 96px;
+  height: 96px;
+  padding: 0 10px;
+  border-radius: 22px;
+  background: #fff;
+  font-size: 50px;
+  font-weight: 800;
+  box-shadow: 0 6px 0 var(--shadow);
+}
+.track-box.missing { background: #ffe3f1; color: var(--pink); border: 4px dashed var(--pink); }
+.track-box.solved { background: #d3f9d8; color: var(--good); animation: pop 0.4s; }
+.track-jump { font-size: 20px; font-weight: 800; color: #45c45a; transform: translateY(-34px); }
+
+/* Patterns */
+.pattern { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding: 14px; border-radius: 24px; background: #ffffffaa; max-width: 960px; }
+.p-item { display: grid; place-items: center; width: min(11vw, 84px); aspect-ratio: 1; }
+.p-item .shape, .p-big .shape { width: 100%; height: 100%; }
+.p-item.missing { border: 4px dashed var(--pink); border-radius: 18px; color: var(--pink); font-size: 40px; font-weight: 800; background: #ffe3f1; }
+.p-item.solved { animation: pop 0.4s; }
+.p-options { display: flex; gap: 20px; }
+.p-option { width: min(24vw, 160px); }
+.p-big { display: grid; width: 62%; aspect-ratio: 1; }
+.p-mini { display: flex; gap: 4px; width: 80%; }
+.p-mini .shape { width: 25%; height: auto; }
+
+/* What goes together */
+.pair-row { display: flex; align-items: center; gap: 16px; }
+.pair-main, .pair-slot { width: min(30vw, 190px); font-size: min(18vw, 110px); }
+.pair-slot {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 28px;
+  border: 5px dashed var(--accent);
+  color: var(--accent);
+  font-size: 70px;
+  font-weight: 800;
+  background: #ffffff88;
+}
+.pair-slot.solved { border-style: solid; border-color: var(--good); background: #d3f9d8; font-size: min(18vw, 110px); animation: pop 0.4s; }
+.pair-link { font-size: 48px; }
+.home .continue .tile-icon, .home .continue .tile-letters { font-size: 36px; }
+.continue .p-mini { width: 110px; background: #fff; border-radius: 16px; padding: 8px; }

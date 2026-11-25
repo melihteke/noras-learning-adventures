@@ -1,5 +1,7 @@
-import { themes, numbers, phrases, type Theme, type Word, type PhraseId } from './themes.ts';
+import { themes, phrases, type Theme, type Word, type PhraseId } from './themes.ts';
 import { alphabet, type AbcWord } from './alphabet.ts';
+import { pairSets, allPairItems, type Pair, type PairItem } from './pairs.ts';
+import { colours, shapes } from './shapes.ts';
 
 /**
  * Every spoken line maps to a stable key; audio lives at public/audio/<key>.mp3.
@@ -21,11 +23,31 @@ export const keys = {
   plusA: (a: number, b: number) => `mpa-${a}-${b}`,
   minQ: (a: number, b: number) => `mm-${a}-${b}`,
   minA: (a: number, b: number) => `mma-${a}-${b}`,
+  pairQ: (p: Pair) => `hq-${p.id}`,
+  pairA: (p: Pair) => `ha-${p.id}`,
+  pairItem: (i: PairItem) => `hw-${i.id}`,
+  colour: (id: string) => `kl-${id}`,
+  shape: (id: string) => `vm-${id}`,
 };
 
 export const MATH_MAX = 10;
-const num = (n: number) => numbers[n - 1];
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
+
+const units = ['nul', 'één', 'twee', 'drie', 'vier', 'vijf', 'zes', 'zeven', 'acht', 'negen', 'tien',
+  'elf', 'twaalf', 'dertien', 'veertien', 'vijftien', 'zestien', 'zeventien', 'achttien', 'negentien'];
+const tens = ['', '', 'twintig', 'dertig', 'veertig', 'vijftig', 'zestig', 'zeventig', 'tachtig', 'negentig'];
+
+/** Dutch number word, 0–100: 21 = "eenentwintig", 22 = "tweeëntwintig". */
+export function numberWord(n: number): string {
+  if (n < 20) return units[n];
+  if (n === 100) return 'honderd';
+  const t = Math.floor(n / 10);
+  const u = n % 10;
+  if (!u) return tens[t];
+  const unit = u === 1 ? 'een' : units[u];
+  return `${unit}${unit.endsWith('e') ? 'ën' : 'en'}${tens[t]}`;
+}
+const num = numberWord;
 
 export function allLines(): { key: string; text: string }[] {
   const lines: { key: string; text: string }[] = [];
@@ -38,7 +60,7 @@ export function allLines(): { key: string; text: string }[] {
       if (w.plural) add(keys.howMany(t, w), `Hoeveel ${w.plural} zie je?`);
     }
   }
-  numbers.forEach((text, i) => add(keys.number(i + 1), text));
+  for (let n = 0; n <= 100; n++) add(keys.number(n), numberWord(n));
   for (const [id, text] of Object.entries(phrases)) add(keys.phrase(id as PhraseId), text);
 
   for (const l of alphabet) {
@@ -64,6 +86,17 @@ export function allLines(): { key: string; text: string }[] {
       add(keys.minA(a, b), `${cap(num(a))} min ${num(b)} is ${num(a - b)}!`);
     }
   }
+
+  for (const s of pairSets) {
+    add(`ps-${s.id}`, s.name);
+    for (const p of s.pairs) {
+      add(keys.pairQ(p), `Wat hoort bij ${p.a.nl}?`);
+      add(keys.pairA(p), `${cap(p.a.nl)} hoort bij ${p.b.nl}.`);
+    }
+  }
+  for (const i of allPairItems()) add(keys.pairItem(i), i.nl);
+  for (const c of colours) add(keys.colour(c.id), c.nl);
+  for (const s of shapes) add(keys.shape(s.id), s.nl);
   return lines;
 }
 

@@ -7,15 +7,20 @@ Themes follow the Dutch school year: School & Beroepen, Spot aan (Kinderboekenwe
 
 | World | Game | What the child does |
 | --- | --- | --- |
-| 💬 Woorden | 👂 Luister & Kies | Hears "Waar is de egel?" and taps the right picture |
-| | 🃏 Memory | Turns over cards (each one says its word) and finds pairs |
-| 🔤 Letters | 📖 Het ABC | Taps a letter, hears "k van kat", explores 2–9 example words per letter |
-| | 👄 Beginklank | "Welk plaatje begint met de k?": picks the picture with that first sound |
-| | 🔍 Letters zoeken | "Waar is de letter k?": taps the right letter |
-| 🔢 Rekenen | 🧮 Tel mee | Taps objects to count out loud, then picks the number (1–5, up to 10) |
-| | ➕ Plussommen | Two groups of pictures, `2 + 3 = ?` (up to 5 / up to 10) |
-| | ➖ Minsommen | Pictures float away, `5 − 2 = ?` (up to 5 / up to 10) |
+| Woorden (picture cards) | Luister en kies | Hears "Waar is de egel?" and taps the right picture |
+| | Memory | Turns over cards (each one says its word) and finds pairs |
+| Letters (ABC blocks) | Het ABC | Taps a letter, hears "k van kat", explores 2–9 example words per letter |
+| | Beginklank | "Welk plaatje begint met de k?": picks the picture with that first sound |
+| | Letters zoeken | "Waar is de letter k?": taps the right letter |
+| Tellen (abacus) | Tel mee | Taps objects to count out loud, then picks the number (1–5, up to 10) |
+| | Honderdveld | 1–100 chart: tap to hear a number, or count along in 1s, 5s or 10s |
+| | Wat komt erna? | `10, 20, 30, ?`: next number up to 10 / 20 / 100, in 5s, in 10s |
+| Rekenen (+ − =) | Plussommen | Two groups of pictures, `2 + 3 = ?` (up to 5 / up to 10) |
+| | Minsommen | Pictures float away, `5 − 2 = ?` (up to 5 / up to 10) |
+| Puzzelen (puzzle) | Patronen | Continues colour/shape patterns (AB, AAB/ABB, ABC) and hears the colour or shape name |
+| | Wat hoort bij elkaar? | "Wat hoort bij de regen?": picks the matching picture (Thuis, Beroepen, Herfst, Sinterklaas) |
 
+World and game tiles use flat SVG icons ([src/icons.ts](src/icons.ts)) with a Dutch caption and a small English caption.
 Letter games are grouped as k g t (practised in class first), a b d e, f h j l, m n o p, r s v w and c i u z.
 Easily confused sounds (c/k/s, f/v, s/z) and look-alike letters (b/d/p, n/u, m/w) never appear together.
 
@@ -42,7 +47,7 @@ npm run build
 
 All spoken lines are built in [src/content/lines.ts](src/content/lines.ts) from
 [themes.ts](src/content/themes.ts) and [alphabet.ts](src/content/alphabet.ts), plus every addition and
-subtraction sum up to 10. MP3s are generated once and committed to `public/audio/`, so the live site needs no API key.
+subtraction sum up to 10, all numbers 0–100, association pairs ([pairs.ts](src/content/pairs.ts)) and colours/shapes ([shapes.ts](src/content/shapes.ts)). MP3s are generated once and committed to `public/audio/`, so the live site needs no API key.
 In a line, `{k}` is spoken as a letter name (SSML `say-as characters`).
 
 1. Create `.env` (gitignored):
@@ -64,12 +69,12 @@ Edit [themes.ts](src/content/themes.ts) (`plural` makes a word usable in Tel mee
 ## Roadmap
 
 - Klanken plakken (t-a-k → tak, auditory synthesis) with real phoneme audio
-- Wat hoort bij elkaar (piet ↔ schoorsteen)
 - Winter, Kerst, Lente, Pasen, Koningsdag, Zomer themes; sentence building and story order
 
 ## Revision History
 
 | Version | Date | Author | Changes |
 | --- | --- | --- | --- |
+| 0.3.0 | 2026-11-25 | Melih Teke | Tellen world (hundred chart, counting in 1s/5s/10s to 100, next number); Puzzelen world (patterns, what goes together); SVG icons with captions instead of emoji |
 | 0.2.0 | 2026-11-25 | Melih Teke | Home illustration (Nora + unicorn); Letters world (ABC, Beginklank, Letters zoeken); Plus/Min sums up to 10; progress page, continue button, hearts, stickers; unicorn/rainbow design |
 | 0.1.0 | 2026-11-25 | Melih Teke | Initial MVP: Luister & Kies, Memory, Tel mee; 5 themes; Azure TTS audio; parent help |
