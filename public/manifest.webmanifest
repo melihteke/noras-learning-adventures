@@ -1,0 +1,10 @@
+{
+  "name": "Nora's Learning Adventures",
+  "short_name": "Nora",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff6e5",
+  "theme_color": "#ffb84d",
+  "icons": [{ "src": "img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

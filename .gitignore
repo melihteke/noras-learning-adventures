@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.env
+*.local
+# Teacher report: contains other children's names and school details. Never commit.
+input.md
