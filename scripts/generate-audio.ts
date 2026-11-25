@@ -27,9 +27,10 @@ const signature = (text: string) => `${VOICE}|${RATE}|${text}`;
 const todo = lines.filter((l) => force || previous[l.key] !== signature(l.text) || !existsSync(join(outDir, `${l.key}.mp3`)));
 
 const escapeXml = (s: string) => s.replace(/[<>&'"]/g, (c) => `&#${c.charCodeAt(0)};`);
+const letters = (s: string) => s.replace(/\{(\w+)\}/g, '<say-as interpret-as="characters">$1</say-as>');
 const ssml = (text: string) =>
   `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="nl-NL">` +
-  `<voice name="${VOICE}"><prosody rate="${RATE}">${escapeXml(text)}</prosody></voice></speak>`;
+  `<voice name="${VOICE}"><prosody rate="${RATE}">${letters(escapeXml(text))}</prosody></voice></speak>`;
 
 async function synth(text: string, attempt = 1): Promise<Buffer> {
   const res = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {

@@ -1,4 +1,3 @@
-import type { Word } from './content/themes.ts';
 import { say } from './audio.ts';
 
 type Attrs = Record<string, string | ((e: Event) => void)>;
@@ -17,11 +16,11 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-export function picture(w: Word): HTMLElement {
-  if (w.img) {
-    return el('img', { class: 'pic', src: `${import.meta.env.BASE_URL}img/${w.img}`, alt: w.nl, draggable: 'false' });
+export function picture(p: { emoji?: string; img?: string }, label: string): HTMLElement {
+  if (p.img) {
+    return el('img', { class: 'pic', src: `${import.meta.env.BASE_URL}img/${p.img}`, alt: label, draggable: 'false' });
   }
-  return el('span', { class: 'pic', role: 'img', 'aria-label': w.nl }, w.emoji ?? '❓');
+  return el('span', { class: 'pic', role: 'img', 'aria-label': label }, p.emoji ?? '❓');
 }
 
 export function shuffle<T>(arr: T[]): T[] {
@@ -42,16 +41,49 @@ export const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const praiseKeys = ['p-goed1', 'p-goed2', 'p-goed3', 'p-goed4'];
 export const praise = () => say(pickRandom(praiseKeys));
 
+/** Restart a CSS animation class on an element. */
+export function flash(node: HTMLElement, cls: string): void {
+  node.classList.remove(cls);
+  void node.offsetWidth;
+  node.classList.add(cls);
+}
+
 export function celebrate(): void {
   const layer = el('div', { class: 'confetti', 'aria-hidden': 'true' });
-  for (let i = 0; i < 30; i++) {
-    const s = el('span', {}, pickRandom(['⭐', '🎉', '✨', '🌟', '🎈']));
+  for (let i = 0; i < 32; i++) {
+    const s = el('span', {}, pickRandom(['⭐', '🦄', '🌈', '💖', '✨', '🌟', '💜']));
     s.style.left = `${Math.random() * 100}%`;
     s.style.animationDelay = `${Math.random() * 0.8}s`;
     layer.append(s);
   }
   document.body.append(layer);
-  setTimeout(() => layer.remove(), 3000);
+  setTimeout(() => layer.remove(), 3200);
+}
+
+/** A heart floats up from a correctly answered element. */
+export function heartPop(from: HTMLElement): void {
+  const r = from.getBoundingClientRect();
+  const h = el('span', { class: 'heart-pop', 'aria-hidden': 'true' }, '💖');
+  h.style.left = `${r.left + r.width / 2}px`;
+  h.style.top = `${r.top}px`;
+  document.body.append(h);
+  setTimeout(() => h.remove(), 1100);
+}
+
+/** Rainbow progress bar with a unicorn running towards the star. */
+export function rainbowBar(done: number, total: number): HTMLElement {
+  const pct = Math.round((done / total) * 100);
+  const fill = el('div', { class: 'rbar-fill' });
+  fill.style.width = `${pct}%`;
+  const uni = el('span', { class: 'rbar-uni' }, '🦄');
+  uni.style.left = `${pct}%`;
+  return el(
+    'div',
+    { class: 'rbar', role: 'progressbar', 'aria-valuenow': String(done), 'aria-valuemax': String(total) },
+    el('div', { class: 'rbar-track' }, fill),
+    uni,
+    el('span', { class: 'rbar-goal' }, '⭐'),
+  );
 }
 
 export function showHelp(title: string, html: string): void {
@@ -68,14 +100,4 @@ export function showHelp(title: string, html: string): void {
     ),
   );
   document.body.append(overlay);
-}
-
-const STAR_KEY = 'nora.stars';
-export function getStars(): number {
-  return Number(localStorage.getItem(STAR_KEY) ?? 0);
-}
-export function addStar(): number {
-  const n = getStars() + 1;
-  localStorage.setItem(STAR_KEY, String(n));
-  return n;
 }

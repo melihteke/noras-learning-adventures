@@ -1,7 +1,7 @@
 import { keys } from '../content/lines.ts';
-import type { Theme, Word } from '../content/themes.ts';
+import { themes, type Theme, type Word } from '../content/themes.ts';
 import { say, sayAll } from '../audio.ts';
-import { el, picture, shuffle, praise, pickRandom } from '../ui.ts';
+import { el, picture, shuffle, praise, pickRandom, flash, heartPop, rainbowBar } from '../ui.ts';
 import type { Game } from './types.ts';
 
 const ROUNDS = 5;
@@ -9,7 +9,8 @@ const LEVEL_KEY = 'nora.countMax';
 
 export const countableWords = (t: Theme): Word[] => t.words.filter((w) => w.plural);
 
-export const telGame: Game = ({ stage, theme, alive, finish }) => {
+export const telGame: Game = ({ stage, subId, alive, answer, finish }) => {
+  const theme = themes.find((t) => t.id === subId)!;
   const words = countableWords(theme);
   let max = Number(localStorage.getItem(LEVEL_KEY) ?? 5);
   let round = 0;
@@ -17,6 +18,7 @@ export const telGame: Game = ({ stage, theme, alive, finish }) => {
   let target: Word;
   let amount = 0;
   let locked = false;
+  let missed = false;
 
   const ask = () => say(keys.howMany(theme, target));
 
@@ -26,10 +28,11 @@ export const telGame: Game = ({ stage, theme, alive, finish }) => {
     target = pickRandom(words);
     amount = 1 + Math.floor(Math.random() * max);
     locked = false;
+    missed = false;
     let counted = 0;
 
     const items = Array.from({ length: amount }, () => {
-      const b = el('button', { class: 'count-item', 'aria-label': target.nl }, picture(target));
+      const b = el('button', { class: 'count-item', 'aria-label': target.nl }, picture(target, target.nl));
       b.addEventListener('click', () => {
         if (b.classList.contains('counted') || locked) return;
         counted++;
@@ -41,11 +44,10 @@ export const telGame: Game = ({ stage, theme, alive, finish }) => {
       return b;
     });
 
-    const options = numberOptions(amount, max);
     stage.replaceChildren(
-      el('div', { class: 'progress' }, '●'.repeat(round - 1) + '○'.repeat(ROUNDS - round + 1)),
+      rainbowBar(round - 1, ROUNDS),
       el('div', { class: 'count-field' }, ...items),
-      el('div', { class: 'numbers' }, ...options.map((n) => numberButton(n))),
+      el('div', { class: 'numbers' }, ...numberOptions(amount, max).map((n) => numberButton(n))),
     );
     ask();
   }
@@ -56,7 +58,9 @@ export const telGame: Game = ({ stage, theme, alive, finish }) => {
       if (locked) return;
       if (n === amount) {
         locked = true;
+        if (!missed) answer(true);
         b.classList.add('correct');
+        heartPop(b);
         streak++;
         if (streak >= 3 && max < 10) {
           max = Math.min(10, max + 1);
@@ -68,9 +72,9 @@ export const telGame: Game = ({ stage, theme, alive, finish }) => {
         if (alive()) next();
       } else {
         streak = 0;
-        b.classList.remove('wrong');
-        void b.offsetWidth;
-        b.classList.add('wrong');
+        if (!missed) answer(false);
+        missed = true;
+        flash(b, 'wrong');
         await sayAll(keys.number(n), 'p-opnieuw');
       }
     });
@@ -82,9 +86,9 @@ export const telGame: Game = ({ stage, theme, alive, finish }) => {
   return { replay: () => target && ask() };
 };
 
-function numberOptions(answer: number, max: number): number[] {
+/** The answer plus two nearby numbers (so the child has to actually count), sorted. */
+export function numberOptions(answer: number, max: number): number[] {
   const pool = shuffle(Array.from({ length: Math.max(max, 3) }, (_, i) => i + 1).filter((n) => n !== answer));
-  // Prefer nearby numbers so the child has to actually count.
   pool.sort((a, b) => Math.abs(a - answer) - Math.abs(b - answer));
   return [answer, ...pool.slice(0, 2)].sort((a, b) => a - b);
 }

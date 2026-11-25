@@ -1,12 +1,13 @@
 import { keys } from '../content/lines.ts';
-import type { Word } from '../content/themes.ts';
+import { themes, type Word } from '../content/themes.ts';
 import { say } from '../audio.ts';
-import { el, picture, shuffle, praise, wait } from '../ui.ts';
+import { el, picture, shuffle, praise, wait, heartPop } from '../ui.ts';
 import type { Game } from './types.ts';
 
 const PAIRS = 4;
 
-export const memoryGame: Game = ({ stage, theme, alive, finish }) => {
+export const memoryGame: Game = ({ stage, subId, alive, answer, finish }) => {
+  const theme = themes.find((t) => t.id === subId)!;
   const unique = theme.words.filter((w, i, all) => all.findIndex((o) => (o.emoji ?? o.img) === (w.emoji ?? w.img)) === i);
   const words = shuffle(unique).slice(0, PAIRS);
   const deck = shuffle([...words, ...words]);
@@ -19,8 +20,8 @@ export const memoryGame: Game = ({ stage, theme, alive, finish }) => {
     const btn = el(
       'button',
       { class: 'mcard', 'aria-label': 'kaart' },
-      el('span', { class: 'back' }, '⭐'),
-      el('span', { class: 'front' }, picture(w)),
+      el('span', { class: 'back' }, '🦄'),
+      el('span', { class: 'front' }, picture(w, w.nl)),
     );
     btn.addEventListener('click', async () => {
       if (busy || btn.classList.contains('flipped')) return;
@@ -37,6 +38,8 @@ export const memoryGame: Game = ({ stage, theme, alive, finish }) => {
       if (a.w.id === b.w.id) {
         a.btn.classList.add('matched');
         b.btn.classList.add('matched');
+        heartPop(b.btn);
+        answer(true);
         found++;
         await praise();
         if (found === PAIRS && alive()) finish();

@@ -1,17 +1,19 @@
 import { keys } from '../content/lines.ts';
-import type { Word } from '../content/themes.ts';
+import { themes, type Word } from '../content/themes.ts';
 import { say, sayAll } from '../audio.ts';
-import { el, picture, shuffle, praise, wait } from '../ui.ts';
+import { el, picture, shuffle, praise, wait, flash, heartPop, rainbowBar } from '../ui.ts';
 import type { Game } from './types.ts';
 
 const ROUNDS = 8;
 
-export const luisterGame: Game = ({ stage, theme, alive, finish }) => {
+export const luisterGame: Game = ({ stage, subId, alive, answer, finish }) => {
+  const theme = themes.find((t) => t.id === subId)!;
   const order = shuffle(theme.words);
   let round = 0;
   let streak = 0;
   let target: Word;
   let locked = false;
+  let missed = false;
 
   const ask = () => say(keys.where(theme, target));
 
@@ -20,33 +22,38 @@ export const luisterGame: Game = ({ stage, theme, alive, finish }) => {
     target = order[round % order.length];
     round++;
     const n = streak >= 3 ? 4 : 3;
-    const others = shuffle(theme.words.filter((w) => w.id !== target.id && (w.emoji ?? w.img) !== (target.emoji ?? target.img))).slice(0, n - 1);
+    const others = shuffle(
+      theme.words.filter((w) => w.id !== target.id && (w.emoji ?? w.img) !== (target.emoji ?? target.img)),
+    ).slice(0, n - 1);
     const choices = shuffle([target, ...others]);
 
     stage.replaceChildren(
-      el('div', { class: 'progress' }, '●'.repeat(round - 1) + '○'.repeat(ROUNDS - round + 1)),
+      rainbowBar(round - 1, ROUNDS),
       el('div', { class: `cards cards-${n}` }, ...choices.map((w) => card(w))),
     );
     locked = false;
+    missed = false;
     ask();
   }
 
   function card(w: Word) {
-    const b = el('button', { class: 'card', 'aria-label': w.nl }, picture(w));
+    const b = el('button', { class: 'card', 'aria-label': w.nl }, picture(w, w.nl));
     b.addEventListener('click', async () => {
       if (locked) return;
       if (w.id === target.id) {
         locked = true;
         streak++;
+        if (!missed) answer(true);
         b.classList.add('correct');
+        heartPop(b);
         await say(keys.word(theme, w));
         await praise();
         if (alive()) next();
       } else {
         streak = 0;
-        b.classList.remove('wrong');
-        void b.offsetWidth;
-        b.classList.add('wrong');
+        if (!missed) answer(false);
+        missed = true;
+        flash(b, 'wrong');
         // Naming the tapped picture still teaches a word.
         await sayAll(keys.word(theme, w), 'p-opnieuw');
         await wait(150);
