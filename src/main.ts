@@ -17,16 +17,21 @@ import { ernaGame, ernaLevels } from './games/erna.ts';
 import { patroonGame, patternLevels, patternTile } from './games/patroon.ts';
 import { hoortGame } from './games/hoort.ts';
 import { pairSets } from './content/pairs.ts';
-import { icons, type IconId } from './icons.ts';
+import { allIcons as icons, type IconId } from './icons.ts';
+import { weekGame, schoolThuisGame, dagErnaGame } from './games/week.ts';
+import { seizoenenGame, welkSeizoenGame, jaarGame } from './games/seizoen.ts';
+import { eerstGame } from './games/eerst.ts';
+import { vergelijkGame, compareLevels } from './games/vergelijk.ts';
 import type { Game, Sub } from './games/types.ts';
 
-type WorldId = 'woorden' | 'letters' | 'tellen' | 'rekenen' | 'puzzelen';
+type WorldId = 'woorden' | 'letters' | 'tellen' | 'rekenen' | 'tijd' | 'puzzelen';
 
 const worlds: { id: WorldId; nl: string; nameKey: string; label: string }[] = [
   { id: 'woorden', nl: 'Woorden', nameKey: 'p-worldWoorden', label: 'Words' },
   { id: 'letters', nl: 'Letters', nameKey: 'p-worldLetters', label: 'Letters' },
   { id: 'tellen', nl: 'Tellen', nameKey: 'p-worldTellen', label: 'Counting' },
   { id: 'rekenen', nl: 'Rekenen', nameKey: 'p-worldRekenen', label: 'Sums' },
+  { id: 'tijd', nl: 'Tijd', nameKey: 'p-worldTijd', label: 'Days & seasons' },
   { id: 'puzzelen', nl: 'Puzzelen', nameKey: 'p-worldPuzzelen', label: 'Puzzles' },
 ];
 
@@ -70,6 +75,7 @@ const patternSubs: Sub[] = patternLevels.map((l) => ({
   tile: () => patternTile(l.id),
 }));
 const pairSubs: Sub[] = pairSets.map((s) => ({ id: s.id, label: s.name, caption: s.name, tile: emojiTile(s.icon) }));
+const compareSubs: Sub[] = compareLevels.map((l) => ({ id: l.id, label: l.label, caption: l.caption, tile: emojiTile(l.tile) }));
 const single = (label: string): Sub[] => [{ id: 'all', label, tile: () => el('span') }];
 
 const games: GameInfo[] = [
@@ -83,8 +89,16 @@ const games: GameInfo[] = [
   { id: 'erna', world: 'tellen', icon: 'erna', nl: 'Wat komt erna?', nameKey: 'p-gameErna', label: 'Next number', helpId: 'erna', play: ernaGame, subs: ernaSubs },
   { id: 'plus', world: 'rekenen', icon: 'plus', nl: 'Plussommen', nameKey: 'p-gamePlus', label: 'Addition', helpId: 'plus', play: mathGame, subs: mathSubs('plus') },
   { id: 'min', world: 'rekenen', icon: 'min', nl: 'Minsommen', nameKey: 'p-gameMin', label: 'Subtraction', helpId: 'min', play: mathGame, subs: mathSubs('min') },
+  { id: 'vergelijk', world: 'rekenen', icon: 'vergelijk', nl: 'Vergelijken', nameKey: 'p-gameVergelijk', label: 'Compare', helpId: 'vergelijk', play: vergelijkGame, subs: compareSubs },
+  { id: 'week', world: 'tijd', icon: 'week', nl: 'De week', nameKey: 'p-gameWeek', label: 'The week', helpId: 'week', play: weekGame, subs: single('7 days') },
+  { id: 'schoolthuis', world: 'tijd', icon: 'schoolthuis', nl: 'School of thuis?', nameKey: 'p-gameSchoolThuis', label: 'School or home?', helpId: 'schoolthuis', play: schoolThuisGame, subs: single('School days / weekend') },
+  { id: 'dagerna', world: 'tijd', icon: 'dagerna', nl: 'Welke dag komt erna?', nameKey: 'p-gameDagErna', label: 'Next day', helpId: 'dagerna', play: dagErnaGame, subs: single('Days of the week') },
+  { id: 'seizoenen', world: 'tijd', icon: 'seizoenen', nl: 'De seizoenen', nameKey: 'p-gameSeizoenen', label: 'The seasons', helpId: 'seizoenen', play: seizoenenGame, subs: single('4 seasons') },
+  { id: 'welkseizoen', world: 'tijd', icon: 'welkseizoen', nl: 'Welk seizoen?', nameKey: 'p-gameWelkSeizoen', label: 'Which season?', helpId: 'welkseizoen', play: welkSeizoenGame, subs: single('Season puzzles') },
+  { id: 'jaar', world: 'tijd', icon: 'jaar', nl: 'Het jaar', nameKey: 'p-gameJaar', label: 'The months', helpId: 'jaar', play: jaarGame, subs: single('12 months') },
   { id: 'patroon', world: 'puzzelen', icon: 'patroon', nl: 'Patronen', nameKey: 'p-gamePatroon', label: 'Patterns', helpId: 'patroon', play: patroonGame, subs: patternSubs },
   { id: 'hoort', world: 'puzzelen', icon: 'hoort', nl: 'Wat hoort bij elkaar?', nameKey: 'p-gameHoort', label: 'What goes together', helpId: 'hoort', play: hoortGame, subs: pairSubs },
+  { id: 'eerst', world: 'puzzelen', icon: 'eerst', nl: 'Wat komt eerst?', nameKey: 'p-gameEerst', label: 'What comes first?', helpId: 'eerst', play: eerstGame, subs: single('Order of events') },
 ];
 const app = document.getElementById('app')!;
 let session = 0;

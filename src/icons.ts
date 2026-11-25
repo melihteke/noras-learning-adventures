@@ -122,4 +122,80 @@ export const icons = {
   ),
 };
 
-export type IconId = keyof typeof icons;
+
+/** A tree in four states: blossom, full summer green, autumn leaves, bare with snow. */
+export function seasonTree(season: string): string {
+  const trunk = `<path d="M46 92V58l-8-8M54 92V56l9-9M50 70V52" stroke="#8d6e63" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+  const ground = (c: string) => `<ellipse cx="50" cy="92" rx="38" ry="6" fill="${c}"/>`;
+  const crown = (c: string) => `<circle cx="50" cy="38" r="26" fill="${c}"/><circle cx="32" cy="46" r="16" fill="${c}"/><circle cx="68" cy="46" r="16" fill="${c}"/>`;
+  const dots = (pts: [number, number][], c: string, r = 4) => pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/>`).join('');
+  switch (season) {
+    case 'lente':
+      return svg(ground('#8ce99a') + trunk + crown('#b2f2bb') + dots([[38, 30], [55, 24], [64, 40], [44, 46], [28, 48], [72, 52], [52, 36]], '#f783ac', 5) +
+        `<circle cx="20" cy="86" r="4" fill="#ffd43b"/><circle cx="82" cy="86" r="4" fill="#f783ac"/>`);
+    case 'zomer':
+      return svg(`<circle cx="84" cy="14" r="10" fill="#ffd43b"/>` + ground('#69db7c') + trunk + crown('#2f9e44') + dots([[40, 36], [60, 46]], '#ff5c5c', 4));
+    case 'herfst':
+      return svg(ground('#e8590c88') + trunk + crown('#ff922b') + dots([[40, 30], [60, 40], [30, 50]], '#e8590c', 6) +
+        `<ellipse cx="20" cy="70" rx="5" ry="3" fill="#f08c00" transform="rotate(30 20 70)"/><ellipse cx="82" cy="78" rx="5" ry="3" fill="#e8590c" transform="rotate(-20 82 78)"/><ellipse cx="74" cy="64" rx="4" ry="2.5" fill="#fab005"/>`);
+    default:
+      return svg(ground('#fff') + `<ellipse cx="50" cy="92" rx="38" ry="6" fill="none" stroke="#a5d8ff" stroke-width="2"/>` +
+        `<path d="M50 92V40M50 62L32 44M50 54l18-18M32 44l-6-10M32 44l-12 2M68 36l4-12M68 36l12 0M50 40l-6-14M50 40l8-14" stroke="#8d6e63" stroke-width="5" fill="none" stroke-linecap="round"/>` +
+        `<path d="M28 42q4-4 8 0M64 34q4-4 8 0M44 28q5-5 10 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>` +
+        dots([[16, 18], [30, 12], [80, 20], [88, 46], [12, 56], [70, 8], [86, 70]], '#a5d8ff', 3));
+  }
+}
+
+const dayColours = ['#ff5c5c', '#ff922b', '#f5b800', '#45c45a', '#3d9bf0', '#9775fa', '#f06595'];
+const schoolHouse = (x: number, y: number, s = 1) =>
+  `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-22 -4L0 -22 22 -4z" fill="#ff5c5c"/><rect x="-18" y="-4" width="36" height="26" fill="#ffe8cc"/><rect x="-5" y="8" width="10" height="14" fill="#8d6e63"/><rect x="-14" y="0" width="7" height="7" fill="#74c0fc"/><rect x="7" y="0" width="7" height="7" fill="#74c0fc"/><path d="M0 -22v-10h10v5H2" fill="#3d9bf0" stroke="#3d9bf0" stroke-width="1.5"/></g>`;
+const house = (x: number, y: number, s = 1) =>
+  `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-20 -2L0 -20 20 -2z" fill="#9775fa"/><rect x="-15" y="-2" width="30" height="24" fill="#fff3bf"/><rect x="-4" y="9" width="9" height="13" fill="#f06595"/>${heart(-9, 4, 0.35, '#f06595')}</g>`;
+
+export const timeIcons = {
+  tijd: svg(
+    `<rect x="10" y="16" width="80" height="74" rx="10" fill="#fff" stroke="#e6d6f2" stroke-width="3"/><path d="M10 26a10 10 0 0 1 10-10h60a10 10 0 0 1 10 10v10H10z" fill="#ff5c5c"/>` +
+      `<rect x="28" y="8" width="7" height="16" rx="3" fill="#4a3a5a"/><rect x="65" y="8" width="7" height="16" rx="3" fill="#4a3a5a"/>` +
+      dayColours.map((c, i) => `<rect x="${16 + (i % 4) * 18}" y="${44 + Math.floor(i / 4) * 20}" width="14" height="14" rx="3" fill="${c}"/>`).join(''),
+  ),
+  week: svg(
+    dayColours.map((c, i) => `<rect x="${6 + i * 12.5 + (i > 4 ? 4 : 0)}" y="36" width="10" height="28" rx="3" fill="${c}"/>`).join('') +
+      `<rect x="6" y="70" width="60" height="6" rx="3" fill="#3d9bf0"/><rect x="73" y="70" width="23" height="6" rx="3" fill="#f06595"/>` +
+      schoolHouse(36, 22, 0.55) + house(84, 22, 0.55),
+  ),
+  schoolthuis: svg(schoolHouse(28, 56, 1) + `<text x="50" y="62" font-size="16" fill="#9a8aa8">/</text>` + house(74, 56, 1)),
+  dagerna: svg(
+    `<rect x="6" y="28" width="34" height="44" rx="8" fill="#ff5c5c"/><text x="23" y="58" font-size="20" fill="#fff">ma</text>` +
+      `<path d="M44 50h10m-5-5 5 5-5 5" stroke="#4a3a5a" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` +
+      `<rect x="60" y="28" width="34" height="44" rx="8" fill="#ffe8cc" stroke="#ff922b" stroke-width="3" stroke-dasharray="5 3"/><text x="77" y="58" font-size="22" fill="#ff922b">?</text>`,
+  ),
+  seizoenen: svg(
+    `<path d="M50 50V8A42 42 0 0 1 92 50z" fill="#d3f9d8"/><path d="M50 50h42A42 42 0 0 1 50 92z" fill="#fff3bf"/><path d="M50 50v42A42 42 0 0 1 8 50z" fill="#ffe8cc"/><path d="M50 50H8A42 42 0 0 1 50 8z" fill="#d0ebff"/>` +
+      `<circle cx="70" cy="30" r="7" fill="#f783ac"/><circle cx="70" cy="30" r="3" fill="#ffd43b"/>` +
+      `<circle cx="70" cy="70" r="8" fill="#ffd43b"/>` +
+      `<ellipse cx="30" cy="70" rx="8" ry="5" fill="#ff922b" transform="rotate(-30 30 70)"/>` +
+      `<path d="M30 22v16M22 30h16M24 24l12 12M36 24 24 36" stroke="#3d9bf0" stroke-width="3" stroke-linecap="round"/>`,
+  ),
+  welkseizoen: svg(
+    `<circle cx="24" cy="66" r="14" fill="#fff" stroke="#a5d8ff" stroke-width="3"/><circle cx="24" cy="42" r="10" fill="#fff" stroke="#a5d8ff" stroke-width="3"/><path d="M20 40h1M27 40h1" stroke="#4a3a5a" stroke-width="3" stroke-linecap="round"/><path d="M24 44l6 2-6 1z" fill="#ff922b"/>` +
+      `<path d="M44 52h10m-5-5 5 5-5 5" stroke="#4a3a5a" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` +
+      `<g transform="translate(46 4) scale(.5)">${seasonTree('winter').replace(/^<svg[^>]*>|<\/svg>$/g, '')}</g>`,
+  ),
+  jaar: svg(
+    `<rect x="10" y="16" width="80" height="74" rx="10" fill="#fff" stroke="#e6d6f2" stroke-width="3"/><path d="M10 26a10 10 0 0 1 10-10h60a10 10 0 0 1 10 10v10H10z" fill="#9775fa"/>` +
+      `<rect x="28" y="8" width="7" height="16" rx="3" fill="#4a3a5a"/><rect x="65" y="8" width="7" height="16" rx="3" fill="#4a3a5a"/>` +
+      `<text x="50" y="78" font-size="38" fill="#9775fa">12</text>`,
+  ),
+  eerst: svg(
+    [['🥚', 6, '1'], ['🐣', 37, '2'], ['🐔', 68, '3']]
+      .map(([e, x, n]) => `<rect x="${x}" y="26" width="27" height="34" rx="6" fill="#fff" stroke="#e6d6f2" stroke-width="2"/><text x="${Number(x) + 13.5}" y="51" font-size="18">${e}</text><circle cx="${Number(x) + 13.5}" cy="74" r="9" fill="#9775fa"/><text x="${Number(x) + 13.5}" y="80" font-size="14" fill="#fff">${n}</text>`)
+      .join(''),
+  ),
+  vergelijk: svg(
+    `<circle cx="34" cy="56" r="26" fill="#3d9bf0"/><circle cx="78" cy="70" r="12" fill="#3d9bf0"/>` +
+      `<path d="M24 22l10-10 10 10M34 12v20" stroke="#45c45a" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+  ),
+};
+
+export const allIcons = { ...icons, ...timeIcons };
+export type IconId = keyof typeof allIcons;

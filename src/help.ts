@@ -8,8 +8,9 @@ export const help = {
         <li><b>Woorden</b> (picture cards): theme vocabulary (Listen &amp; pick, Memory).</li>
         <li><b>Letters</b> (ABC blocks): ABC book, first sounds, finding letters.</li>
         <li><b>Tellen</b> (abacus): counting objects, the 1–100 chart, counting in 1s, 5s and 10s.</li>
-        <li><b>Rekenen</b> (+ − =): addition and subtraction up to 10.</li>
-        <li><b>Puzzelen</b> (puzzle piece): patterns and "what goes together".</li>
+        <li><b>Rekenen</b> (+ − =): addition and subtraction up to 10, comparing (big/small, more/fewer, first/last).</li>
+        <li><b>Tijd</b> (calendar): days of the week (school days vs weekend), the seasons, the months.</li>
+        <li><b>Puzzelen</b> (puzzle piece): patterns, "what goes together", "what comes first".</li>
         <li><b>Voortgang</b> (trophy): progress page (what she has done, accuracy, letters learned, stickers).</li>
         <li><b>▶️ rainbow button</b>: continues the last game she played.</li>
         <li>💖 = correct answers, ⭐ = finished games. Stars unlock stickers.</li>
@@ -127,6 +128,63 @@ export const help = {
         <li>Sets: Thuis (home), Beroepen (jobs), Herfst (autumn), Sinterklaas. The Sinterklaas pairs are the same
           ones the teacher used in class (Piet ↔ chimney, chocolate letter ↔ shoe, steamboat ↔ sea).</li>
         <li>Tip: ask "why?" ("Waarom?"). The teacher noted that explaining the link is still hard for the children.</li>
+      </ul>`,
+  },
+  week: {
+    title: 'De week (The week)',
+    html: `<p>The 7 days, each with its own colour, short name (<em>ma di wo do vr za zo</em>, as on Dutch
+      classroom day cards) and dots for its place in the week.</p>
+      <ul>
+        <li>🎒 + blue bar = the 5 school days, 🏠 + pink bar = the weekend.</li>
+        <li>Tap a day: <em>"Op maandag ga je naar school!"</em> / <em>"Op zaterdag ben je thuis. Het is weekend!"</em></li>
+        <li><b>▶</b> sings the whole week; finishing it earns a star.</li>
+        <li>Tip: every morning ask "Welke dag is het vandaag?" ("What day is it today?").</li>
+      </ul>`,
+  },
+  schoolthuis: {
+    title: 'School of thuis? (School or home?)',
+    html: `<p>The app says a day (e.g. <em>"woensdag"</em>) and asks <em>"Ga je naar school, of ben je thuis?"</em>.
+      Nora taps 🏫 school (Monday–Friday) or 🏠 thuis (Saturday, Sunday).</p>`,
+  },
+  dagerna: {
+    title: 'Welke dag komt erna? (Which day comes next?)',
+    html: `<p><em>"Welke dag komt na dinsdag?"</em> ("Which day comes after Tuesday?"). Nora picks the next day card.</p>
+      <p>Hint: the dots on the cards count up (ma = 1 dot, di = 2 …). After Sunday comes Monday again.</p>`,
+  },
+  seizoenen: {
+    title: 'De seizoenen (The seasons)',
+    html: `<p>Four trees: <b>lente</b> (spring, blossom), <b>zomer</b> (summer, sun), <b>herfst</b> (autumn,
+      falling leaves), <b>winter</b> (snow). Tap a tree to see and hear what belongs to that season.
+      🔙 goes back to all four.</p>`,
+  },
+  welkseizoen: {
+    title: 'Welk seizoen? (Which season?)',
+    html: `<p>A picture is shown (e.g. a snowman) and the app asks <em>"Bij welk seizoen hoort de sneeuwpop?"</em>.
+      Nora taps the right tree: snowman → winter, ice cream → summer, mushroom → autumn, tulip → spring.</p>
+      <p>Tip: talk about the season it is now and what you see outside.</p>`,
+  },
+  jaar: {
+    title: 'Het jaar (The months)',
+    html: `<p>The 12 months, coloured by season, each with one thing to remember (e.g. November: Sinterklaas arrives
+      by steamboat). Listening only, no quiz: at 5, months are an introduction. They are taught properly
+      in groep 2–3.</p>
+      <p>Tip: show her birthday month and the current month.</p>`,
+  },
+  eerst: {
+    title: 'Wat komt eerst? (What comes first?)',
+    html: `<p>Three pictures of something that happens in order (egg → chick → chicken, morning → afternoon → night,
+      bath → brush teeth → sleep…). Nora taps them in the right order; they fill slots 1, 2, 3.
+      Then the app tells the little story: <em>"Eerst… Dan… En dan…"</em>.</p>
+      <p>This practises the "first, then, then" storytelling the teacher works on (vertelvis).
+      Tip: let Nora retell the story herself using <em>eerst, dan, en dan</em>.</p>`,
+  },
+  vergelijk: {
+    title: 'Vergelijken (Compare)',
+    html: `<ul>
+        <li><b>groot · klein</b>: <em>"Tik op de grootste / kleinste"</em> (biggest / smallest).</li>
+        <li><b>meer · minder</b>: <em>"Waar zijn er het meest / het minst?"</em> (most / fewest).</li>
+        <li><b>eerste · laatste</b>: animals queue at the school door 🏫. <em>"Wie is de eerste / laatste in de rij?"</em>
+          The first one is next to the door. (<em>de rij</em>, <em>eerste</em>, <em>laatste</em> are words from the school list.)</li>
       </ul>`,
   },
   progress: {

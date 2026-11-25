@@ -2,6 +2,7 @@ import { themes, phrases, type Theme, type Word, type PhraseId } from './themes.
 import { alphabet, type AbcWord } from './alphabet.ts';
 import { pairSets, allPairItems, type Pair, type PairItem } from './pairs.ts';
 import { colours, shapes } from './shapes.ts';
+import { days, seasons, months, sequences } from './time.ts';
 
 /**
  * Every spoken line maps to a stable key; audio lives at public/audio/<key>.mp3.
@@ -28,6 +29,17 @@ export const keys = {
   pairItem: (i: PairItem) => `hw-${i.id}`,
   colour: (id: string) => `kl-${id}`,
   shape: (id: string) => `vm-${id}`,
+  day: (id: string) => `d-${id}`,
+  dayInfo: (id: string) => `di-${id}`,
+  dayNextQ: (id: string) => `dq-${id}`,
+  dayNextA: (id: string) => `da-${id}`,
+  season: (id: string) => `s-${id}`,
+  seasonItem: (id: string) => `si-${id}`,
+  seasonQ: (id: string) => `sq-${id}`,
+  seasonA: (id: string) => `sa-${id}`,
+  month: (id: string) => `mo-${id}`,
+  seqStory: (id: string) => `rs-${id}`,
+  seqStep: (id: string, i: number) => `ri-${id}-${i}`,
 };
 
 export const MATH_MAX = 10;
@@ -56,7 +68,7 @@ export function allLines(): { key: string; text: string }[] {
     add(keys.theme(t), t.name);
     for (const w of t.words) {
       add(keys.word(t, w), w.nl);
-      add(keys.where(t, w), `Waar is ${w.nl}?`);
+      add(keys.where(t, w), w.ask ?? `Waar is ${w.nl}?`);
       if (w.plural) add(keys.howMany(t, w), `Hoeveel ${w.plural} zie je?`);
     }
   }
@@ -97,6 +109,27 @@ export function allLines(): { key: string; text: string }[] {
   for (const i of allPairItems()) add(keys.pairItem(i), i.nl);
   for (const c of colours) add(keys.colour(c.id), c.nl);
   for (const s of shapes) add(keys.shape(s.id), s.nl);
+
+  for (const [i, d] of days.entries()) {
+    const next = days[(i + 1) % days.length];
+    add(keys.day(d.id), d.id);
+    add(keys.dayInfo(d.id), d.school ? `Op ${d.id} ga je naar school!` : `Op ${d.id} ben je thuis. Het is weekend!`);
+    add(keys.dayNextQ(d.id), `Welke dag komt na ${d.id}?`);
+    add(keys.dayNextA(d.id), `Na ${d.id} komt ${next.id}!`);
+  }
+  for (const s of seasons) {
+    add(keys.season(s.id), s.nl);
+    for (const it of s.items) {
+      add(keys.seasonItem(it.id), it.nl);
+      add(keys.seasonQ(it.id), `Bij welk seizoen hoort ${it.nl}?`);
+      add(keys.seasonA(it.id), `${cap(it.nl)} hoort bij ${s.nl}!`);
+    }
+  }
+  for (const m of months) add(keys.month(m.id), m.info);
+  for (const q of sequences) {
+    add(keys.seqStory(q.id), q.story);
+    q.steps.forEach((st, i) => add(keys.seqStep(q.id, i), st.nl));
+  }
   return lines;
 }
 

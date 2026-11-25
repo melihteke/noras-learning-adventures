@@ -8,6 +8,8 @@ export interface Word {
   img?: string;
   /** Plural without article; makes the word usable in the counting game. */
   plural?: string;
+  /** Custom question instead of "Waar is <nl>?" (e.g. "Wie is blij?" for feelings). */
+  ask?: string;
 }
 
 export interface Theme {
@@ -119,6 +121,40 @@ export const themes: Theme[] = [
       { id: 'dak', nl: 'het dak', emoji: '🏠' },
     ],
   },
+  {
+    id: 'winter',
+    name: 'Winter',
+    icon: '⛄',
+    words: [
+      { id: 'sneeuwpop', nl: 'de sneeuwpop', emoji: '⛄', plural: 'sneeuwpoppen' },
+      { id: 'sneeuwvlok', nl: 'de sneeuwvlok', emoji: '❄️', plural: 'sneeuwvlokken' },
+      { id: 'slee', nl: 'de slee', emoji: '🛷', plural: 'sleeën' },
+      { id: 'want', nl: 'de want', emoji: '🧤', plural: 'wanten' },
+      { id: 'sjaal', nl: 'de sjaal', emoji: '🧣', plural: 'sjaals' },
+      { id: 'schaats', nl: 'de schaats', emoji: '⛸️', plural: 'schaatsen' },
+      { id: 'kerstboom', nl: 'de kerstboom', emoji: '🎄', plural: 'kerstbomen' },
+      { id: 'ster', nl: 'de ster', emoji: '⭐', plural: 'sterren' },
+      { id: 'pinguin', nl: 'de pinguïn', emoji: '🐧', plural: 'pinguïns' },
+      { id: 'kaars', nl: 'de kaars', emoji: '🕯️', plural: 'kaarsen' },
+      { id: 'ijs', nl: 'het ijs', emoji: '🧊' },
+      { id: 'cadeautje', nl: 'het cadeautje', emoji: '🎁', plural: 'cadeautjes' },
+    ],
+  },
+  {
+    id: 'gevoelens',
+    name: 'Gevoelens',
+    icon: '😊',
+    words: [
+      { id: 'blij', nl: 'blij', emoji: '😄', ask: 'Wie is blij?' },
+      { id: 'verdrietig', nl: 'verdrietig', emoji: '😢', ask: 'Wie is verdrietig?' },
+      { id: 'boos', nl: 'boos', emoji: '😠', ask: 'Wie is boos?' },
+      { id: 'bang', nl: 'bang', emoji: '😨', ask: 'Wie is bang?' },
+      { id: 'moe', nl: 'moe', emoji: '😴', ask: 'Wie is moe?' },
+      { id: 'ziek', nl: 'ziek', emoji: '🤒', ask: 'Wie is ziek?' },
+      { id: 'verbaasd', nl: 'verbaasd', emoji: '😲', ask: 'Wie is verbaasd?' },
+      { id: 'verliefd', nl: 'verliefd', emoji: '🥰', ask: 'Wie is verliefd?' },
+    ],
+  },
 ];
 
 /** Fixed spoken phrases, keyed by id. */
@@ -167,6 +203,28 @@ export const phrases = {
   patroonIntro: 'Kijk goed naar het patroon.',
   patroonVraag: 'Wat komt er hierna?',
   hoortIntro: 'Wat hoort bij elkaar? Tik op het goede plaatje.',
+  worldTijd: 'De tijd',
+  gameWeek: 'De week',
+  gameSchoolThuis: 'School of thuis?',
+  gameDagErna: 'Welke dag komt erna?',
+  gameSeizoenen: 'De seizoenen',
+  gameWelkSeizoen: 'Welk seizoen?',
+  gameJaar: 'Het jaar',
+  gameEerst: 'Wat komt eerst?',
+  gameVergelijk: 'Vergelijken',
+  weekIntro: 'Een week heeft zeven dagen. Vijf dagen ga je naar school. En dan is het twee dagen weekend!',
+  schoolThuisVraag: 'Ga je naar school, of ben je thuis?',
+  seizoenIntro: 'Er zijn vier seizoenen: de lente, de zomer, de herfst en de winter.',
+  jaarIntro: 'Een jaar heeft twaalf maanden. Tik op een maand.',
+  eerstIntro: 'Wat komt eerst? Tik de plaatjes op de goede volgorde.',
+  eerstVraag: 'Wat komt eerst?',
+  dan: 'En dan?',
+  grootste: 'Tik op de grootste.',
+  kleinste: 'Tik op de kleinste.',
+  meeste: 'Waar zijn er het meest?',
+  minste: 'Waar zijn er het minst?',
+  eerste: 'Wie is de eerste in de rij?',
+  laatste: 'Wie is de laatste in de rij?',
 } as const;
 
 export type PhraseId = keyof typeof phrases;
